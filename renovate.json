@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "config:base",
+    ":preserveSemverRanges"
+  ],
+  "ignorePaths": [
+    "**/.foundation/**",
+    "**/.docker/**",
+    "**/docker/**"
+  ],
+  "dockerfile": {
+    "enabled": false
+  }
+}
