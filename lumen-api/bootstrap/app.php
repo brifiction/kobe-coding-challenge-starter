@@ -21,9 +21,26 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
+/*
+|--------------------------------------------------------------------------
+| Enable Facades and Eloquent
+|--------------------------------------------------------------------------
+| Facades provide a "static" interface to classes that are available in the application's service container.
+| Laravel ships with many facades which provide access to almost all of Laravel's features.
+| Laravel facades serve as "static proxies" to underlying classes in the service container, providing the benefit of a
+| terse, expressive syntax while maintaining more testability and flexibility than traditional static methods.
+|
+| The Eloquent ORM included with Laravel provides a beautiful, simple ActiveRecord
+| implementation for working with your database.
+| Each database table has a corresponding "Model" which is used to interact with that table.
+| Models allow you to query for data in your tables, as well as insert new records into the table.
+|
+|
+*/
 
-// $app->withEloquent();
+$app->withFacades();
+
+$app->withEloquent();
 
 /*
 |--------------------------------------------------------------------------
