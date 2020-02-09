@@ -1,0 +1,71 @@
+version: '3'
+services:
+  # PHP Service
+  lumen-api:
+    build:
+      context: ./lumen-api
+      dockerfile: ./docker/Dockerfile
+    image: lumen-api
+    container_name: lumen-api
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www
+    volumes:
+       - ./lumen-api/:/var/www
+       - ./lumen-api/docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+       - '/var/www/vendor'
+    networks:
+      - app-network
+  # Nginx Service
+  webserver:
+    image: nginx:alpine
+    container_name: lumen-webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8000:80"
+    volumes:
+      - ./lumen-api/:/var/www
+      - ./lumen-api/docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - app-network
+  # MySQL Service
+  db:
+    image: mysql:5.7.22
+    container_name: lumen-db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: lumen
+      MYSQL_ROOT_PASSWORD: root
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./lumen-api/docker/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - app-network
+  # Vue frontend
+  vue-spa:
+    build:
+      context: ./vue-spa
+    image: vue-spa
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "8080:8080"
+    volumes:
+       - ./vue-spa:/var/www
+       - '/var/www/node_modules'
+
+# Docker Networks
+networks:
+  app-network:
+    driver: bridge
+
+# Volumes
+volumes:
+  dbdata:
+    driver: local
