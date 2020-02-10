@@ -21,6 +21,7 @@ class ProductController extends Controller
     {
 
         // $this->middleware('auth');
+
         // get token
         $this->api_token = $request->header('api_token');
 
@@ -33,8 +34,8 @@ class ProductController extends Controller
             ]
         ]);
 
-        // kick out the illegal user
-        $theUser = $this->client->get(config('api.endpoint.user') . 'api/' . $this->api_token);
+        // deny the heathen user
+        $theUser = $this->client->get(config('api.url') . config('api.endpoint.user') . 'api/' . $this->api_token);
         $this->loggedUser = json_decode($theUser->getBody());
         if ($this->loggedUser->message == 'API key is invalid.' || $this->loggedUser->message == 'Login is required.') {
             die($this->loggedUser->message);
