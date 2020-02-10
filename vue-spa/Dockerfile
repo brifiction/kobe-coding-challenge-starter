@@ -1,7 +1,7 @@
 #
 # Frontend
 #
-FROM node:8.11
+FROM node:8.17
 
 WORKDIR /var/www/
 
