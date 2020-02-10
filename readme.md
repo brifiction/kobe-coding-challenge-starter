@@ -28,6 +28,8 @@ This section will be constantly updated / appended throughout the project until 
 The following are personal notes taken, during the development of this project:
 1. Modified Dockerfile to resolve installation of ``mysql-client``, resolved to ``mysql-client-*``.
 1. ``docker-compose.yml`` config for ``vue-spa`` port is open to ``8080``.
+1. Performed multiple ``renovate`` pull requests, to update ``npm`` packages. Prevented ``lumen`` and php-related 
+pull requests.
 
 ## Installation
 
