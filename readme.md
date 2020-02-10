@@ -33,8 +33,17 @@ The following are personal notes taken, during the development of this project:
 
 ### Setting up local environment
 1. Perform the following steps, to build and run docker images:
-```bash
-cd ``kobe-coding-challenge-starter``.
-run ``docker-compose up --build``.
-```
+   ```bash
+   cd kobe-coding-challenge-starter
+   docker-compose up --build
+   ```
+   If there is an issue with rebuilding, perform the tasks below then rinse-and-repeat:
+   ```bash
+   # Stop all found processes
+   docker stop $(docker ps -a -q)
+   # Remove all found processes
+   docker rm -f $(docker ps -a -q)
+   # Builds, recreates, starts, and attaches to containers for a service (along with building the images, before starting the containers).
+   docker-compose up --build
+   ```
 1. 
