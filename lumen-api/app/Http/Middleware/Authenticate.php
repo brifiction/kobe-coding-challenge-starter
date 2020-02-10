@@ -18,7 +18,7 @@ class Authenticate
     /**
      * Create a new middleware instance.
      *
-     * @param  \Illuminate\Contracts\Auth\Factory  $auth
+     * @param \Illuminate\Contracts\Auth\Factory $auth
      * @return void
      */
     public function __construct(Auth $auth)
@@ -29,24 +29,24 @@ class Authenticate
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string|null  $guard
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
+     * @param string|null $guard
      * @return mixed
      */
     public function handle($request, Closure $next, $guard = null)
     {
         if ($this->auth->guard($guard)->guest()) {
-            if($request->has('api_token')){
+            if ($request->has('api_token')) {
                 $tokenForm = $request->input('api_token');
                 $tokenDb = User::where('api_token', $tokenForm)->first();
-                if(empty($tokenDb)){
+                if (empty($tokenDb)) {
                     $response['success'] = false;
                     $response['message'] = 'API Token does not match.';
 
                     return response($response);
                 }
-            }else{
+            } else {
                 $response['success'] = false;
                 $response['message'] = 'Login is required.';
 
