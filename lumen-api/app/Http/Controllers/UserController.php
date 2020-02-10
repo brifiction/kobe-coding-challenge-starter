@@ -30,12 +30,14 @@ class UserController extends Controller
         $email = $request->input('email');
         $password = $theHash->make($request->input('password'));
         $role = $request->input('role');
+        $apiToken = md5(time());
 
         $register = User::create([
             'name' => $name,
             'email' => $email,
             'password' => $password,
-            'role' => $role
+            'role' => $role,
+            'api_token' => $apiToken,
         ]);
 
         if ($register) {
@@ -48,7 +50,6 @@ class UserController extends Controller
             $response['message'] = 'Registration failed.';
 
             return response($response);
-
         }
     }
 
