@@ -18,9 +18,22 @@ class LoginController extends Controller
     }
 
     /**
+     * Welcome function
+     *
+     * Provide a welcome message to the visitor.
+     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     */
+    public function welcome() {
+        $response['success'] = true;
+        $response['result'] = "Welcome to Brian's Tabletop Games";
+
+        return response($response);
+    }
+
+    /**
      * Login function
      *
-     * When user login successfully, it will retrieve a callback as api_token
+     * When user login successfully, it will retrieve a callback as api_token.
      * @param Request $request
      * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
      */

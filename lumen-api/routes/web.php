@@ -26,13 +26,8 @@
 |
 */
 
-$router->group(['prefix' => 'api/'], function () use ($router) {
-
-    $router->get('/', function () {
-        $response['success'] = true;
-        $response['result'] = "Welcome to Brian's Tabletop Games (Lumen API)";
-        return response($response);
-    });
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->get('/', 'LoginController@welcome');
 
     $router->post('login', 'LoginController@login');
     $router->post('register', 'UserController@register');
