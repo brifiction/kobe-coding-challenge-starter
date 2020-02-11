@@ -6,7 +6,7 @@ use App\User;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 
-class Authenticate
+class Administrator
 {
     /**
      * The authentication guard factory instance.
@@ -40,7 +40,7 @@ class Authenticate
             if ($request->has('api_token')) {
                 $tokenForm = $request->input('api_token');
                 $tokenDb = User::where('api_token', $tokenForm)
-                    ->where('role', 'customer')
+                    ->where('role', 'administrator')
                     ->first();
                 if (empty($tokenDb)) {
                     $response['success'] = false;
@@ -49,7 +49,6 @@ class Authenticate
                     return response()->json($response);
                 }
             } else {
-
                 if($request->header('api-token')) {
                     return $next($request);
                 }
