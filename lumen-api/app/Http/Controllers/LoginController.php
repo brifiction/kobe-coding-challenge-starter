@@ -22,6 +22,7 @@ class LoginController extends Controller
      *
      * Provide a welcome message to the visitor.
      * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @url /
      */
     public function welcome() {
         $response['success'] = true;
@@ -36,6 +37,7 @@ class LoginController extends Controller
      * When user login successfully, it will retrieve a callback as api_token.
      * @param Request $request
      * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @url /login
      */
     public function login(Request $request)
     {
@@ -46,7 +48,7 @@ class LoginController extends Controller
 
         if ($dataUser) {
             if ($theHash->check($password, $dataUser->password)) {
-                $apiToken = md5(time());
+                $apiToken = sha1(time());
                 $updateTokenDb = User::find($dataUser->id)->update(['api_token' => $apiToken]);
                 if ($updateTokenDb) {
                     $response['success'] = true;

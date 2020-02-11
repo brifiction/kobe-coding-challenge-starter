@@ -22,6 +22,7 @@ class UserController extends Controller
      *
      * @param $request Request
      * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @url /register
      */
     public function register(Request $request)
     {
@@ -30,7 +31,7 @@ class UserController extends Controller
         $email = $request->input('email');
         $password = $theHash->make($request->input('password'));
         $role = $request->input('role');
-        $apiToken = md5(time());
+        $apiToken = sha1(time());
 
         $register = User::create([
             'name' => $name,
