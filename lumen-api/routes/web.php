@@ -37,20 +37,29 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     // product
     $router->get('products', 'ProductController@index');
-    $router->get('product/{id}', ['middleware' => 'auth', 'uses' => 'ProductController@getProduct']);
-    $router->post('product/create', ['middleware' => 'auth', 'uses' => 'ProductController@create']);
-    $router->delete('product/delete/{id}', ['middleware' => 'auth', 'uses' => 'ProductController@delete']);
-    $router->put('product/update-inventory/{id}/{new_inventory}', ['middleware' => 'auth', 'uses' => 'ProductController@updateInventory']);
-    $router->put('product/update/{id}', ['middleware' => 'auth', 'uses' => 'ProductController@update']);
+    $router->get('product/{id}', 'ProductController@getProduct');
+
+    $router->group(['middleware' => 'auth'], function() use ($router) {
+        $router->post('product/create', 'ProductController@create');
+        $router->delete('product/delete/{id}', 'ProductController@delete');
+        $router->put('product/update-inventory/{id}/{new_inventory}', 'ProductController@updateInventory');
+        $router->put('product/update/{id}', 'ProductController@update');
+    });
 
     // order
-    $router->get('order', 'OrderController@index');
-    $router->get('order/{id}', 'OrderController@detail');
-    $router->post('order/checkout', 'OrderController@checkout');
-    $router->post('order/validate', 'OrderController@validateOrder');
-    $router->post('order/shipment', 'OrderController@shipmentOrder');
-    $router->post('order/track', 'OrderController@trackOrder');
-    $router->post('order/track-shipment', 'OrderController@trackShipment');
-    $router->post('order/payment-confirm', 'OrderController@paymentConfirm');
+    $router->group(['middleware' => 'auth'], function() use ($router) {
+        $router->post('order/checkout', 'OrderController@checkout');
+        $router->post('order/track', 'OrderController@trackOrder');
+        $router->post('order/track-shipment', 'OrderController@trackShipment');
+        $router->post('order/payment-confirm', 'OrderController@paymentConfirm');
+    });
+
+    $router->group(['middleware' => 'admin'], function() use ($router) {
+        $router->get('orders', 'OrderController@index');
+        $router->get('order/{id}', 'OrderController@detail');
+
+        $router->post('order/validate', 'OrderController@validateOrder');
+        $router->post('order/shipment', 'OrderController@shipmentOrder');
+    });
 
 });

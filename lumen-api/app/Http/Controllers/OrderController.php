@@ -26,7 +26,7 @@ class OrderController extends Controller
         // $this->middleware('auth');
 
         // get token and add to headers
-        $this->api_token = $request->header('api_token');
+        $this->api_token = $request->header('api-token');
 
         $this->client = new Client([
             'verify' => false,
@@ -48,55 +48,79 @@ class OrderController extends Controller
      *
      * @param $request Request
      * @url /order
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
+     *
      */
-    public function index(Request $request){
-        if($this->loggedUser->message->role != 'administrator') {
+    public function index(Request $request)
+    {
+        if ($this->loggedUser->message->role != 'administrator') {
             $response['success'] = false;
             $response['message'] = 'Hey you! This is a restricted area.';
 
-            return response($response);
+            return response()->json($response);
         }
+
         $order = Order::all();
 
         if (count($order) > 0) {
             $response['success'] = true;
-            $response['message'] = $order;
+            $response['message'] = 'This is the complete list of orders.';
 
-            return response($response);
-        }else{
+            return response()->json([
+                'success' => $response['success'],
+                'message' => $response['message'],
+                'data' => $order,
+            ]);
+
+            // return response()->json($response);
+        } else {
             $response['success'] = false;
             $response['message'] = 'There are no orders found. Bummer.';
 
-            return response($response);
+            return response()->json($response);
 
         }
     }
 
     /**
-     * Show Detail Order
+     * Show Order details
      *
      * @param $id
      * @url /order/{$id}
      * @return \Illuminate\Http\JsonResponse
+     *
      */
-    public function detail($id){
-        if($this->loggedUser->message->role != 'administrator') {
+    public function detail($id)
+    {
+        if ($this->loggedUser->message->role != 'administrator') {
             $response['success'] = false;
             $response['message'] = 'Hey you! This is a restricted area.';
 
             return response()->json($response);
         }
+
         $order = Order::find($id);
+
         $orderDetail = OrderDetail::where('order_id', $id)->get();
-        $order->details = !$orderDetail->isEmpty() ? $orderDetail : array('Let`s get started');
+
+        try {
+            $order->details = !$orderDetail->isEmpty() ? $orderDetail : array('Let`s get started, shop till you drop!');
+        } catch (\Exception $e) {
+            $order->details = null;
+        }
 
         if (count($orderDetail) > 0) {
             $response['success'] = true;
-            $response['message'] = $order;
+            $response['message'] = 'This is the order details for order #' . $id . '.';
 
-            return response()->json($response);
-        }else{
+            return response()->json([
+                'success' => $response['success'],
+                'message' => $response['message'],
+                'data' => $order,
+            ]);
+
+            // return response()->json($response);
+        } else {
             $response['success'] = false;
             $response['message'] = 'There are no orders found. Bummer.';
 
@@ -112,27 +136,34 @@ class OrderController extends Controller
      * @url /track
      * @return \Illuminate\Http\JsonResponse
      */
-    public function trackOrder(Request $request){
+    public function trackOrder(Request $request)
+    {
         if ($request->has('order_no')) {
             $order = Order::where('order_no', $request->input('order_no'))->first();
 
             if ($order) {
                 $orderDetail = OrderDetail::where('order_id', $order->id)->get();
-                $order->details = !$orderDetail->isEmpty() ? $orderDetail : array('Let`s get started');
+                $order->details = !$orderDetail->isEmpty() ? $orderDetail : array('Let`s get started, shop till you drop!');
 
                 if (count($orderDetail) > 0) {
                     $response['success'] = true;
-                    $response['message'] = $order;
+                    $response['message'] = 'Tracking the order for order #' . $order->id . '.';
 
-                    return response()->json($response);
-                }else{
+                    return response()->json([
+                        'success' => $response['success'],
+                        'message' => $response['message'],
+                        'data' => $order,
+                    ]);
+
+                    // return response()->json($response);
+                } else {
                     $response['success'] = false;
                     $response['message'] = 'There are no orders found. Shucks.';
 
                     return response()->json($response);
                 }
             }
-        }else{
+        } else {
             $response['success'] = false;
             $response['message'] = 'There are no orders found. Shucks.';
 
@@ -147,7 +178,8 @@ class OrderController extends Controller
      * @url /order/checkout/
      * @return \Illuminate\Http\JsonResponse
      */
-    public function checkout(Request $request){
+    public function checkout(Request $request)
+    {
         try {
             //init DB Transaction to rollback the failure while inserting to database
             DB::beginTransaction();
@@ -169,20 +201,20 @@ class OrderController extends Controller
                     'grand_total' => $cart->grand_total,
                     'shipping_name' => $request->input('shipping_name'),
                     'shipping_phone' => $request->input('shipping_phone'),
-                    'shipping_email' =>  $request->input('shipping_email'),
+                    'shipping_email' => $request->input('shipping_email'),
                     'shipping_address' => $request->input('shipping_address'),
                 ]);
 
                 if ($order->save()) {
 
                     //reduce coupon qty if the customer uses coupon
-                    if(!empty($cart->coupon_id)){
+                    if (!empty($cart->coupon_id)) {
                         $theCoupon = $this->client->get(config('api.endpoint.coupon') . $cart->coupon_code_name);
                         $coupon = json_decode($theCoupon->getBody());
                         $newCouponQty = $coupon->qty - 1;
                         $updateCouponQty = $this->client->get(config('api.endpoint.coupon') . 'update-qty/' . $cart->coupon_id . '/' . $newCouponQty);
                         $statusUpdateCoupon = json_decode($updateCouponQty->getBody());
-                        if(!$statusUpdateCoupon->success){
+                        if (!$statusUpdateCoupon->success) {
                             DB::rollBack();
                             $response['success'] = false;
                             $response['message'] = 'Could not update coupon quantity.';
@@ -200,7 +232,7 @@ class OrderController extends Controller
                         $updateInventoryProduct = $this->client->get(config('api.endpoint.product') . 'update-inventory/' . $value->product_id . '/' . $newInventory);
                         $statusUpdateProduct = json_decode($updateInventoryProduct->getBody());
 
-                        if(!$statusUpdateProduct->success){
+                        if (!$statusUpdateProduct->success) {
                             DB::rollBack();
                             $response['success'] = false;
                             $response['message'] = 'Could not update product inventory.';
@@ -231,21 +263,21 @@ class OrderController extends Controller
                     $theCartTruncate = $this->client->get(config('api.endpoint.cart') . 'truncate');
                     $cartTruncate = json_decode($theCartTruncate->getBody());
 
-                    if($cartTruncate->success){
+                    if ($cartTruncate->success) {
                         DB::commit();
                         $response['success'] = true;
                         $response['message'] = 'Order checkout is successful, nice.';
-                    }else{
+                    } else {
                         DB::rollBack();
                         $response['success'] = false;
                         $response['message'] = 'Could not save to database, hence no changes made.';
                     }
-                }else{
+                } else {
                     DB::rollBack();
                     $response['success'] = false;
                     $response['message'] = 'Could not save to database, hence no changes made.';
                 }
-            }else{
+            } else {
                 $response['success'] = false;
                 $response['message'] = 'Shipping details is required.';
             }
@@ -267,7 +299,8 @@ class OrderController extends Controller
      * @url /order/payment-confirm/
      * @return mixed
      */
-    public function paymentConfirm(Request $request){
+    public function paymentConfirm(Request $request)
+    {
         if ($request->has('order_no')) {
             $order = Order::where('order_no', $request->input('order_no'))->first();
 
@@ -282,14 +315,14 @@ class OrderController extends Controller
                     $response['message'] = 'Payment confirmed. Thank you for your payment.';
 
                     return response()->json($response);
-                }else{
+                } else {
                     $response['success'] = false;
                     $response['message'] = 'Could not save to database, hence no changes made.';
 
                     return response()->json($response);
                 }
             }
-        }else{
+        } else {
             $response['success'] = false;
             $response['message'] = 'Please note that all fields are required.';
 
@@ -304,13 +337,15 @@ class OrderController extends Controller
      * @url /order/validate/
      * @return \Illuminate\Http\JsonResponse
      */
-    public function validateOrder(Request $request){
-        if($this->loggedUser->message->role != 'administrator') {
+    public function validateOrder(Request $request)
+    {
+        if ($this->loggedUser->message->role != 'administrator') {
             $response['success'] = false;
             $response['message'] = 'Hey you! This is a restricted area.';
 
             return response()->json($response);
         }
+
         if ($request->has('order_no')) {
             $order = Order::where('order_no', $request->input('order_no'))->first();
             if (!$order) {
@@ -327,13 +362,13 @@ class OrderController extends Controller
                     $response['message'] = 'The order is valid. Next, please provide the shipping id immediately.';
 
                     return response()->json($response);
-                }else{
+                } else {
                     $response['success'] = false;
                     $response['message'] = 'Could not save to database, hence no changes made.';
 
                     return response()->json($response);
                 }
-            }else{
+            } else {
                 $order->status = 'rejected';
 
                 if ($order->save()) {
@@ -341,7 +376,7 @@ class OrderController extends Controller
                     $response['message'] = 'The order is invalid. You did not provide the shipping id.';
 
                     return response()->json($response);
-                }else{
+                } else {
                     $response['success'] = false;
                     $response['message'] = 'Could not save to database, hence no changes made.';
 
@@ -349,7 +384,7 @@ class OrderController extends Controller
                 }
             }
 
-        }else{
+        } else {
             $response['success'] = false;
             $response['message'] = 'Please note that all fields are required.';
 
@@ -364,13 +399,15 @@ class OrderController extends Controller
      * @url /order/shipment/
      * @return \Illuminate\Http\JsonResponse
      */
-    public function shipmentOrder(Request $request){
-        if($this->loggedUser->message->role != 'administrator') {
+    public function shipmentOrder(Request $request)
+    {
+        if ($this->loggedUser->message->role != 'administrator') {
             $response['success'] = false;
             $response['message'] = 'Hey you! This is a restricted area.';
 
             return response()->json($response);
         }
+
         if ($request->has('order_no')) {
             $order = Order::where('order_no', $request->input('order_no'))->first();
             if (!$order) {
@@ -393,13 +430,13 @@ class OrderController extends Controller
 
                     return response()->json($response);
                 }
-            }else{
+            } else {
                 $response['success'] = false;
                 $response['message'] = 'Could not save to database, hence no changes made.';
 
                 return response()->json($response);
             }
-        }else{
+        } else {
             $response['success'] = false;
             $response['message'] = 'Please note that all fields are required.';
 
@@ -414,7 +451,8 @@ class OrderController extends Controller
      * @url /track-shipment
      * @return \Illuminate\Http\JsonResponse
      */
-    public function trackShipment(Request $request){
+    public function trackShipment(Request $request)
+    {
         if ($request->has('order_no')) {
             $shipment = Shipment::where('order_no', $request->input('order_no'))->first();
 
@@ -423,14 +461,14 @@ class OrderController extends Controller
                 $response['message'] = $shipment;
 
                 return response()->json($response);
-            }else{
+            } else {
                 $response['success'] = false;
                 $response['message'] = 'The shipping id provided is invalid. Uh-oh.';
 
                 return response()->json($response);
 
             }
-        }else{
+        } else {
             $response['success'] = false;
             $response['message'] = 'There are no orders found. Shucks.';
 

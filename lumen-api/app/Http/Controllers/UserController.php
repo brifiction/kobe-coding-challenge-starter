@@ -31,7 +31,7 @@ class UserController extends Controller
         $email = $request->input('email');
         $password = $theHash->make($request->input('password'));
         $role = $request->input('role');
-        $apiToken = sha1(time().rand(1,9999));
+        $apiToken = sha1(time() . rand(1, 9999));
 
         $register = User::create([
             'name' => $name,

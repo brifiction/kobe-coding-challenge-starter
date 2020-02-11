@@ -21,14 +21,14 @@ class LoginController extends Controller
      * Welcome function
      *
      * Provide a welcome message to the visitor.
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      * @url /
      */
     public function welcome() {
         $response['success'] = true;
         $response['result'] = "Welcome to Brian's Tabletop Games";
 
-        return response($response);
+        return response()->json($response);
     }
 
     /**
@@ -36,7 +36,7 @@ class LoginController extends Controller
      *
      * When user login successfully, it will retrieve a callback as api_token.
      * @param Request $request
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      * @url /login
      */
     public function login(Request $request)
@@ -52,27 +52,34 @@ class LoginController extends Controller
                 $updateTokenDb = User::find($dataUser->id)->update(['api_token' => $apiToken]);
                 if ($updateTokenDb) {
                     $response['success'] = true;
+                    $response['message'] = 'Login successful. Welcome.';
                     $response['api_token'] = $apiToken;
-                    $response['message'] = $dataUser;
 
-                    return response($response);
+                    return response()->json([
+                        'success' => $response['success'],
+                        'message' => $response['message'],
+                        'api_token' => $response['api_token'],
+                        'data' => $dataUser,
+                    ]);
+
+                    // return response()->json($response);
                 } else {
                     $response['success'] = false;
                     $response['message'] = 'Error unknown.';
 
-                    return response($response);
+                    return response()->json($response);
                 }
             } else {
                 $response['success'] = false;
                 $response['message'] = 'Email and password seems to be incorrect.';
 
-                return response($response);
+                return response()->json($response);
             }
         } else {
             $response['success'] = false;
             $response['message'] = 'Email and password failed to recognize.';
 
-            return response($response);
+            return response()->json($response);
         }
     }
 }
