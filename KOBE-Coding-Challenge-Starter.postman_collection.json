@@ -25,23 +25,22 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "brianngchongeu@gmail.com",
+									"value": "xfritsch@example.com",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "Br1@n2008",
+									"value": "password",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/login",
+							"raw": "http://{{URL}}/api/login",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "8000",
 							"path": [
 								"api",
 								"login"
@@ -58,8 +57,8 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
 							}
 						],
 						"body": {
@@ -88,12 +87,11 @@
 							]
 						},
 						"url": {
-							"raw": "http://localhost:8000/api/register",
+							"raw": "http://{{URL}}/api/register",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "8000",
 							"path": [
 								"api",
 								"register"
@@ -104,9 +102,6 @@
 				},
 				{
 					"name": "Get User",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"auth": {
 							"type": "apikey",
@@ -118,7 +113,7 @@
 								},
 								{
 									"key": "value",
-									"value": "bf6348414a3b442b444eb9ab9cc77b16",
+									"value": "1d3da0c5c924440aa71f9958fff6c48e0f123eee",
 									"type": "string"
 								},
 								{
@@ -130,21 +125,16 @@
 						},
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": []
-						},
 						"url": {
-							"raw": "http://localhost:8000/api/user/1",
+							"raw": "http://{{URL}}/api/user/8",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "8000",
 							"path": [
 								"api",
 								"user",
-								"1"
+								"8"
 							]
 						}
 					},
@@ -153,20 +143,318 @@
 				{
 					"name": "Get User API",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8000/api/user/api/bf6348414a3b442b444eb9ab9cc77b16",
+							"raw": "http://{{URL}}/api/user/api/1d3da0c5c924440aa71f9958fff6c48e0f123eee",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{URL}}"
 							],
-							"port": "8000",
 							"path": [
 								"api",
 								"user",
 								"api",
-								"bf6348414a3b442b444eb9ab9cc77b16"
+								"1d3da0c5c924440aa71f9958fff6c48e0f123eee"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Get Product",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://{{URL}}/api/product/30",
+							"protocol": "http",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"product",
+								"30"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{URL}}/api/products",
+							"protocol": "http",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "e98e459bffb6a8ee3e87d32856a0fecd11ebd42a",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "query",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "api_token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{URL}}/api/product/delete/10",
+							"protocol": "http",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"product",
+								"delete",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product Inventory",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "6b009031fa797cc7f5549f69f271a5e6cce3fcc5",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "query",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "api_token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://{{URL}}/api/product/update-inventory/11/51",
+							"protocol": "http",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"product",
+								"update-inventory",
+								"11",
+								"51"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "value",
+									"value": "6b009031fa797cc7f5549f69f271a5e6cce3fcc5",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "query",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "api_token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Brian's RPG Adventure",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "This is a new game, called Brian's RPG Adventure",
+									"type": "text"
+								},
+								{
+									"key": "inventory",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "50.50",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{URL}}/api/product/update/11",
+							"protocol": "http",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"product",
+								"update",
+								"11"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "key",
+									"value": "api-token",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "value",
+									"value": "1d3da0c5c924440aa71f9958fff6c48e0f123eee",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{URL}}/api/orders",
+							"protocol": "http",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order",
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "key",
+									"value": "api-token",
+									"type": "string"
+								},
+								{
+									"key": "in",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "value",
+									"value": "1d3da0c5c924440aa71f9958fff6c48e0f123eee",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{URL}}/api/order/1",
+							"protocol": "http",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"1"
 							]
 						}
 					},
@@ -181,18 +469,47 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/api",
+					"raw": "http://{{URL}}/api",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{URL}}"
 					],
-					"port": "8000",
 					"path": [
 						"api"
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "57ca555e-9568-461a-99c9-0820f1a1c490",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "e7d59fe3-e4c8-48f3-825b-13bcca9953cb",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "a2f19dd7-64cf-4545-8f7f-417d5e436e12",
+			"key": "URL",
+			"value": "192.168.10.128:8000",
+			"type": "string"
 		}
 	],
 	"protocolProfileBehavior": {}
