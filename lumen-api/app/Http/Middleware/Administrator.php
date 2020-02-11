@@ -49,7 +49,7 @@ class Administrator
                     return response()->json($response);
                 }
             } else {
-                if($request->header('api-token')) {
+                if ($request->header('api-token')) {
                     return $next($request);
                 }
 

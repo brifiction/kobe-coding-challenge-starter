@@ -50,7 +50,7 @@ class Authenticate
                 }
             } else {
 
-                if($request->header('api-token')) {
+                if ($request->header('api-token')) {
                     return $next($request);
                 }
 

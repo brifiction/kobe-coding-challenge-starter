@@ -53,7 +53,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        if($this->loggedUser->message->role != 'administrator') {
+        if ($this->loggedUser->message->role != 'administrator') {
             $response['success'] = false;
             $response['message'] = 'Hey you! This is a restricted area.';
 
@@ -92,7 +92,7 @@ class OrderController extends Controller
      */
     public function detail($id)
     {
-        if($this->loggedUser->message->role != 'administrator') {
+        if ($this->loggedUser->message->role != 'administrator') {
             $response['success'] = false;
             $response['message'] = 'Hey you! This is a restricted area.';
 
@@ -345,6 +345,7 @@ class OrderController extends Controller
 
             return response()->json($response);
         }
+
         if ($request->has('order_no')) {
             $order = Order::where('order_no', $request->input('order_no'))->first();
             if (!$order) {
@@ -406,6 +407,7 @@ class OrderController extends Controller
 
             return response()->json($response);
         }
+
         if ($request->has('order_no')) {
             $order = Order::where('order_no', $request->input('order_no'))->first();
             if (!$order) {
