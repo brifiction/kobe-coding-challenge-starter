@@ -22,10 +22,9 @@ class ProductController extends Controller
 
         // $this->middleware('auth');
 
-        // get token
+        // get token and add to headers
         $this->api_token = $request->header('api_token');
 
-        // add api_token to the headers.
         $this->client = new Client([
             'verify' => false,
             'headers' => [
@@ -34,7 +33,6 @@ class ProductController extends Controller
             ]
         ]);
 
-        // deny the heathen user
         $theUser = $this->client->get(config('api.url') . config('api.endpoint.user') . 'api/' . $this->api_token);
         $this->loggedUser = json_decode($theUser->getBody());
         if ($this->loggedUser->message == 'API key is invalid.' || $this->loggedUser->message == 'Login is required.') {
@@ -47,6 +45,7 @@ class ProductController extends Controller
      *
      * @param $request Request
      * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @url /product
      */
     public function index(Request $request)
     {
@@ -70,8 +69,8 @@ class ProductController extends Controller
      * Insert new product
      *
      * @param $request Request
-     * @url /product
      * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @url /product/create
      */
     public function create(Request $request)
     {
@@ -170,9 +169,9 @@ class ProductController extends Controller
      * @param $product_id , $new_stock
      * @param $new_inventory
      * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
-     * @url /product/update-stock/{product_id}/{new_stock}
+     * @url /product/update-inventory/{product_id}/{new_inventory}
      */
-    public function updateStock($product_id, $new_inventory)
+    public function updateInventory($product_id, $new_inventory)
     {
         $product = Product::find($product_id);
         $product->stock = $new_inventory;

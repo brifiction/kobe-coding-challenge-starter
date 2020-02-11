@@ -18,7 +18,7 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->string('description');
             $table->integer('inventory');
-            $table->integer('price');
+            $table->float('price');
             $table->boolean('sold')->default('0');
             $table->timestamps();
         });

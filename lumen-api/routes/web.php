@@ -31,8 +31,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->post('login', 'LoginController@login');
     $router->post('register', 'UserController@register');
-
     $router->get('user/{id}', ['middleware' => 'auth', 'uses' => 'UserController@getUser']);
     $router->get('user/api/{api_token}', 'UserController@getUserApi');
-}
-);
+
+    $router->get('/product', 'ProductController@index');
+    $router->get('/product/{id}', 'ProductController@getProduct');
+    $router->get('/product/delete/{id}', 'ProductController@delete');
+    $router->get('/product/update-inventory/{product_id}/{new_inventory}', 'ProductController@updateInventory');
+    $router->post('/product/create', 'ProductController@create');
+    $router->post('/product/update/{id}', 'ProductController@update');
+});
