@@ -23,28 +23,28 @@ class ProductController extends Controller
         // $this->middleware('auth');
 
         // get token and add to headers
-        $this->api_token = $request->header('api_token');
-
-        $this->client = new Client([
-            'verify' => false,
-            'headers' => [
-                'Accept' => 'application/json',
-                'api_token' => $this->api_token
-            ]
-        ]);
-
-        $theUser = $this->client->get(config('api.url') . config('api.endpoint.user') . 'api/' . $this->api_token);
-        $this->loggedUser = json_decode($theUser->getBody());
-        if ($this->loggedUser->message == 'API key is invalid.' || $this->loggedUser->message == 'Login is required.') {
-            die($this->loggedUser->message);
-        }
+//        $this->api_token = $request->header('api_token');
+//
+//        $this->client = new Client([
+//            'verify' => false,
+//            'headers' => [
+//                'Accept' => 'application/json',
+//                'api_token' => $this->api_token
+//            ]
+//        ]);
+//
+//        $theUser = $this->client->get(config('api.endpoint.user') . 'api/' . $this->api_token);
+//        $this->loggedUser = json_decode($theUser->getBody());
+//        if ($this->loggedUser->message == 'API key is invalid.' || $this->loggedUser->message == 'Login is required.') {
+//            die($this->loggedUser->message);
+//        }
     }
 
     /**
      * Show all Products
      *
      * @param $request Request
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      * @url /product
      */
     public function index(Request $request)
@@ -53,15 +53,20 @@ class ProductController extends Controller
 
         if (count($products) > 0) {
             $response['success'] = true;
-            $response['message'] = $products;
+            $response['message'] = 'This is the complete product catalogue.';
 
-            return response($response);
+            return response()->json([
+                'success' => $response['success'],
+                'message' => $response['message'],
+                'data' => $products,
+            ]);
+
+            // return response()->json($response);
         } else {
             $response['success'] = false;
             $response['message'] = 'There are no products found. Bummer.';
 
-            return response($response);
-
+            return response()->json($response);
         }
     }
 
@@ -69,7 +74,7 @@ class ProductController extends Controller
      * Insert new product
      *
      * @param $request Request
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      * @url /product/create
      */
     public function create(Request $request)
@@ -87,13 +92,12 @@ class ProductController extends Controller
             $response['success'] = true;
             $response['message'] = 'Product successfully added. Hooray!';
 
-            return response($response);
+            return response()->json($response);
         } else {
             $response['success'] = false;
             $response['message'] = 'Error unknown, perhaps could not add the product.';
 
-            return response($response);
-
+            return response()->json($response);
         }
     }
 
@@ -110,19 +114,20 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if ($product) {
-            // $response['success'] = true;
-            // $response['message'] = $product;
+            $response['success'] = true;
+            $response['message'] = 'Product found, nice.';
 
-            // return response($response);
-            return response()->json(
-                $product
-            );
+            return response()->json([
+                'success' => $response['success'],
+                'message' => $response['message'],
+                'data' => $product,
+            ]);
+            // return response()->json($product);
         } else {
             $response['success'] = false;
             $response['message'] = 'Product could not be found, probably doesn\'t exist. We must consult with the Jedi Council.';
 
-            return response($response);
-
+            return response()->json($response);
         }
     }
 
@@ -131,13 +136,14 @@ class ProductController extends Controller
      *
      * @param $request Request, $id
      * @param $id
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      * @url /product/update/{id}
      */
     public function update(Request $request, $id)
     {
         if ($request->has('name')) {
             $product = Product::find($id);
+
             $product->name = $request->input('name');
             $product->description = $request->input('description');
             $product->inventory = $request->input('inventory');
@@ -147,55 +153,76 @@ class ProductController extends Controller
                 $response['success'] = true;
                 $response['message'] = 'Product successfully updated.';
 
-                return response($response);
+                return response()->json([
+                    'success' => $response['success'],
+                    'message' => $response['message'],
+                    'data' => $product,
+                ]);
+
+                // return response($response);
             } else {
                 $response['success'] = false;
                 $response['message'] = 'Error unknown, perhaps could not add product. Very mystery, much puzzle, such wow.';
 
-                return response($response);
+                return response()->json($response);
             }
 
         } else {
             $response['success'] = false;
             $response['message'] = 'There are no changes made. How bout\' that.';
 
-            return response($response);
+            return response()->json($response);
         }
     }
 
     /**
      * Update product
      *
-     * @param $product_id , $new_stock
+     * EXAMPLE PUT SIMULATION ONLY.
+     * @param $id
      * @param $new_inventory
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      * @url /product/update-inventory/{product_id}/{new_inventory}
+     *
      */
-    public function updateInventory($product_id, $new_inventory)
+    public function updateInventory($id, $new_inventory)
     {
-        $product = Product::find($product_id);
-        $product->stock = $new_inventory;
+        $product = Product::find($id);
+        $product->inventory = $new_inventory;
 
-        if ($product->save()) {
+        $update = $product->update([
+            'inventory' => $new_inventory,
+        ]);
+
+        if ($update) {
             $response['success'] = true;
             $response['message'] = 'Product successfully updated.';
 
-            return response($response);
+            return response()->json([
+                'success' => $response['success'],
+                'message' => $response['message'],
+                'data' => $product,
+            ]);
+
+            // return response()->json($product);
         } else {
             $response['success'] = false;
             $response['message'] = 'Error unknown, perhaps could not update the product. Very mystery, much puzzle, such wow.';
 
-            return response($response);
+            return response()->json($response);
         }
     }
 
     /**
-     * Delete product
+     * Delete product.
      *
+     * EXAMPLE DELETE SIMULATION ONLY.
      * @param $request Request, $id
      * @param $id
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      * @url /product/delete/{id}
+     * @todo KOBE-TODO-1 apply soft-delete functions and processes. also, change route to DELETE.
+     *
      */
     public function delete(Request $request, $id)
     {
@@ -205,19 +232,19 @@ class ProductController extends Controller
             $response['success'] = false;
             $response['message'] = 'Product could not be found. Sneaky fella, hiding from meeting its maker.';
 
-            return response($response);
+            return response()->json($response);
         }
 
         if ($product->delete($id)) {
             $response['success'] = true;
             $response['message'] = 'Product successfully removed. Adios, amigo.';
 
-            return response($response);
+            return response()->json($response);
         } else {
             $response['success'] = false;
             $response['message'] = 'Error unknown, perhaps could not remove the product. Very mystery, much puzzle, such wow.';
 
-            return response($response);
+            return response()->json($response);
         }
     }
 }

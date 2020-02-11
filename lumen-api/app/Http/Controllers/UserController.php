@@ -21,7 +21,7 @@ class UserController extends Controller
      * Register new User
      *
      * @param $request Request
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      * @url /register
      */
     public function register(Request $request)
@@ -31,7 +31,7 @@ class UserController extends Controller
         $email = $request->input('email');
         $password = $theHash->make($request->input('password'));
         $role = $request->input('role');
-        $apiToken = sha1(time());
+        $apiToken = sha1(time().rand(1,9999));
 
         $register = User::create([
             'name' => $name,
@@ -45,12 +45,12 @@ class UserController extends Controller
             $response['success'] = true;
             $response['message'] = 'Registration successful.';
 
-            return response($response);
+            return response()->json($response);
         } else {
             $response['success'] = false;
             $response['message'] = 'Registration failed.';
 
-            return response($response);
+            return response()->json($response);
         }
     }
 
@@ -59,7 +59,7 @@ class UserController extends Controller
      *
      * @param $request Request
      * @param $id
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      * @url /user/{id}
      */
     public function getUser(Request $request, $id)
@@ -70,12 +70,12 @@ class UserController extends Controller
             $response['success'] = true;
             $response['message'] = $user;
 
-            return response($response);
+            return response()->json($response);
         } else {
             $response['success'] = false;
             $response['message'] = 'The user not found, or does not exist.';
 
-            return response($response);
+            return response()->json($response);
         }
     }
 
@@ -84,7 +84,7 @@ class UserController extends Controller
      *
      * @param $request Request
      * @param $api_token
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\JsonResponse
      * @url /user/api/{api_token}
      */
     public function getUserApi(Request $request, $api_token)
@@ -95,12 +95,12 @@ class UserController extends Controller
             $response['success'] = true;
             $response['message'] = $user;
 
-            return response($response);
+            return response()->json($response);
         } else {
             $response['success'] = false;
             $response['message'] = 'API key is invalid.';
 
-            return response($response);
+            return response()->json($response);
         }
     }
 }
