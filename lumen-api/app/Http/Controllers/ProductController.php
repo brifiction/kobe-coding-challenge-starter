@@ -23,21 +23,21 @@ class ProductController extends Controller
         // $this->middleware('auth');
 
         // get token and add to headers
-//        $this->api_token = $request->header('api_token');
-//
-//        $this->client = new Client([
-//            'verify' => false,
-//            'headers' => [
-//                'Accept' => 'application/json',
-//                'api_token' => $this->api_token
-//            ]
-//        ]);
-//
-//        $theUser = $this->client->get(config('api.endpoint.user') . 'api/' . $this->api_token);
-//        $this->loggedUser = json_decode($theUser->getBody());
-//        if ($this->loggedUser->message == 'API key is invalid.' || $this->loggedUser->message == 'Login is required.') {
-//            die($this->loggedUser->message);
-//        }
+        $this->api_token = $request->header('api-token');
+
+        $this->client = new Client([
+            'verify' => false,
+            'headers' => [
+                'Accept' => 'application/json',
+                'api_token' => $this->api_token
+            ]
+        ]);
+
+        $theUser = $this->client->get(config('api.endpoint.user') . 'api/' . $this->api_token);
+        $this->loggedUser = json_decode($theUser->getBody());
+        if ($this->loggedUser->message == 'API key is invalid.' || $this->loggedUser->message == 'Login is required.') {
+            die($this->loggedUser->message);
+        }
     }
 
     /**
@@ -46,6 +46,7 @@ class ProductController extends Controller
      * @param $request Request
      * @return \Illuminate\Http\JsonResponse
      * @url /product
+     *
      */
     public function index(Request $request)
     {
@@ -76,6 +77,7 @@ class ProductController extends Controller
      * @param $request Request
      * @return \Illuminate\Http\JsonResponse
      * @url /product/create
+     *
      */
     public function create(Request $request)
     {
@@ -108,6 +110,7 @@ class ProductController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
      * @url /product/{id}
+     *
      */
     public function getProduct(Request $request, $id)
     {
@@ -138,6 +141,7 @@ class ProductController extends Controller
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      * @url /product/update/{id}
+     *
      */
     public function update(Request $request, $id)
     {
@@ -178,7 +182,6 @@ class ProductController extends Controller
     /**
      * Update product
      *
-     * EXAMPLE PUT SIMULATION ONLY.
      * @param $id
      * @param $new_inventory
      * @return \Illuminate\Http\JsonResponse
@@ -216,12 +219,10 @@ class ProductController extends Controller
     /**
      * Delete product.
      *
-     * EXAMPLE DELETE SIMULATION ONLY.
      * @param $request Request, $id
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      * @url /product/delete/{id}
-     * @todo KOBE-TODO-1 apply soft-delete functions and processes. also, change route to DELETE.
      *
      */
     public function delete(Request $request, $id)
@@ -239,7 +240,13 @@ class ProductController extends Controller
             $response['success'] = true;
             $response['message'] = 'Product successfully removed. Adios, amigo.';
 
-            return response()->json($response);
+            return response()->json([
+                'success' => $response['success'],
+                'message' => $response['message'],
+                'data' => $product,
+            ]);
+
+            // return response()->json($response);
         } else {
             $response['success'] = false;
             $response['message'] = 'Error unknown, perhaps could not remove the product. Very mystery, much puzzle, such wow.';
