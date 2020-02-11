@@ -42,15 +42,20 @@ class Authenticate
                 $tokenDb = User::where('api_token', $tokenForm)->first();
                 if (empty($tokenDb)) {
                     $response['success'] = false;
-                    $response['message'] = 'API Token does not match.';
+                    $response['message'] = 'API Token is invalid.';
 
-                    return response($response);
+                    return response()->json($response);
                 }
             } else {
+
+                if($request->header('api-token')) {
+                    return $next($request);
+                }
+
                 $response['success'] = false;
                 $response['message'] = 'Login is required.';
 
-                return response($response);
+                return response()->json($response);
             }
         }
 
