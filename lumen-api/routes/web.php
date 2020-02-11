@@ -29,15 +29,28 @@
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/', 'LoginController@welcome');
 
+    // user
     $router->post('login', 'LoginController@login');
     $router->post('register', 'UserController@register');
     $router->get('user/{id}', ['middleware' => 'auth', 'uses' => 'UserController@getUser']);
     $router->get('user/api/{api_token}', 'UserController@getUserApi');
 
-    $router->get('/product', 'ProductController@index');
-    $router->get('/product/{id}', 'ProductController@getProduct');
-    $router->get('/product/delete/{id}', 'ProductController@delete');
-    $router->get('/product/update-inventory/{product_id}/{new_inventory}', 'ProductController@updateInventory');
-    $router->post('/product/create', 'ProductController@create');
-    $router->post('/product/update/{id}', 'ProductController@update');
+    // product
+    $router->get('products', 'ProductController@index');
+    $router->get('product/{id}', ['middleware' => 'auth', 'uses' => 'ProductController@getProduct']);
+    $router->post('product/create', ['middleware' => 'auth', 'uses' => 'ProductController@create']);
+    $router->delete('product/delete/{id}', ['middleware' => 'auth', 'uses' => 'ProductController@delete']);
+    $router->put('product/update-inventory/{id}/{new_inventory}', ['middleware' => 'auth', 'uses' => 'ProductController@updateInventory']);
+    $router->put('product/update/{id}', ['middleware' => 'auth', 'uses' => 'ProductController@update']);
+
+    // order
+    $router->get('order', 'OrderController@index');
+    $router->get('order/{id}', 'OrderController@detail');
+    $router->post('order/checkout', 'OrderController@checkout');
+    $router->post('order/validate', 'OrderController@validateOrder');
+    $router->post('order/shipment', 'OrderController@shipmentOrder');
+    $router->post('order/track', 'OrderController@trackOrder');
+    $router->post('order/track-shipment', 'OrderController@trackShipment');
+    $router->post('order/payment-confirm', 'OrderController@paymentConfirm');
+
 });
