@@ -48,7 +48,7 @@ class LoginController extends Controller
 
         if ($dataUser) {
             if ($theHash->check($password, $dataUser->password)) {
-                $apiToken = sha1(time());
+                $apiToken = sha1(time().rand(1,9999));
                 $updateTokenDb = User::find($dataUser->id)->update(['api_token' => $apiToken]);
                 if ($updateTokenDb) {
                     $response['success'] = true;
