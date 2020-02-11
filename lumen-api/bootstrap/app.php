@@ -114,4 +114,25 @@ $app->router->group([
     require __DIR__.'/../routes/web.php';
 });
 
+/*
+|--------------------------------------------------------------------------
+| Define custom configuration files (optional)
+|--------------------------------------------------------------------------
+|
+| Prepare custom configuration files for usage throughout the application.
+|
+|
+|
+*/
+
+$config = [
+    'api',
+];
+
+foreach ($config as $file) {
+    $app->configure($file);
+}
+
+
+
 return $app;

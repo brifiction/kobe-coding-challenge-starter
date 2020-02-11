@@ -26,8 +26,9 @@ Vue frontend: http://localhost:3000/
 This section will be constantly updated / appended throughout the project until completion.
 
 The following are personal notes taken, during the development of this project:
-1. Modified Dockerfile to resolve installation of ``mysql-client``, resolved to ``mysql-client-*``.
+1. Modified Dockerfile to resolve installation of ``mysql-client``, resolved to ``mariadb-client``.
 1. ``docker-compose.yml`` config for ``vue-spa`` port is open to ``8080``.
+1. ``phpmyadmin`` is an additional image, built together among the other ``docker`` images.
 
 ## Installation
 
