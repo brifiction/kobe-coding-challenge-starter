@@ -48,14 +48,18 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     // order
     $router->group(['middleware' => 'auth'], function() use ($router) {
-        $router->get('orders', 'OrderController@index');
-        $router->get('order/{id}', 'OrderController@detail');
         $router->post('order/checkout', 'OrderController@checkout');
-        $router->post('order/validate', 'OrderController@validateOrder');
-        $router->post('order/shipment', 'OrderController@shipmentOrder');
         $router->post('order/track', 'OrderController@trackOrder');
         $router->post('order/track-shipment', 'OrderController@trackShipment');
         $router->post('order/payment-confirm', 'OrderController@paymentConfirm');
+    });
+
+    $router->group(['middleware' => 'admin'], function() use ($router) {
+        $router->get('orders', 'OrderController@index');
+        $router->get('order/{id}', 'OrderController@detail');
+
+        $router->post('order/validate', 'OrderController@validateOrder');
+        $router->post('order/shipment', 'OrderController@shipmentOrder');
     });
 
 });
