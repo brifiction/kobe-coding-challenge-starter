@@ -7,7 +7,7 @@
                     <h4 class="card-title">{{ name }}</h4>
                     <div class="card-text">{{ price | dollars }}</div>
                     <div class="row justify-content-center">
-                        <button class="btn btn-primary btn-sm">Add to cart</button>
+                        <button class="btn btn-primary" @click="addToCart(id)">Add to cart</button>
                     </div>
                 </div>
             </div>
@@ -16,11 +16,18 @@
 </template>
 
 <script>
+    import {dollars} from '@/filters.js';
+
     export default {
-        name: 'item',
+        name: 'product',
         props: ['id', 'name', 'image', 'price'],
         filters: {
-            dollars: num => `$${num / 100}`,
+            dollars,
+        },
+        methods: {
+            addToCart(id) {
+                this.$store.dispatch('addToCart', id);
+            },
         },
     };
 </script>
