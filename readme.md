@@ -79,3 +79,9 @@ The following are personal notes taken, during the development of this project:
 1. Added ``phpmyadmin`` to ``docker-compose.yml`` image build.
 1. Proceeded to turn on middleware for user authentication.
 1. Proceeded further to add ``LoginController`` functions, for user login and validation.
+1. 
+1. 
+
+#### vue-spa
+##### Step 1
+1. 
