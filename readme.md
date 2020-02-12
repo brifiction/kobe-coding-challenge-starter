@@ -68,4 +68,14 @@ The following are personal notes taken, during the development of this project:
     1. vue-spa (vue) - http://localhost:8080
     1. db (mysql) - hostname:db, port:3306, database:lumen auth:root/root
     1. phpmyadmin - http://localhost:8082
-1.     
+1. Proceed to define and update ``Dockerfile`` build configurations (and fixes), along with ``composer`` and ``yarn`` requirements.
+1. Start building with ``lumen`` and ``vue``.
+
+### lumen-api
+#### Step 1
+1. Define the ``Dockerfile`` build configurations for ``php`` and ``nginx``, along with ``composer.json`` requirements.
+1. Enable ``eloquent`` and ``facades``.
+1. Define ``user`` MVC (with migration files), and override ``Authenticate.php`` middleware to use **api token authentication**. 
+1. Added ``phpmyadmin`` to ``docker-compose.yml`` image build.
+1. Proceeded to turn on middleware for user authentication.
+1. Proceeded further to add ``LoginController`` functions, for user login and validation.
